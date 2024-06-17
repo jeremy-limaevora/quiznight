@@ -1,4 +1,7 @@
 <?php include "database.php"; ?>
+<?php 
+// get total question 
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
