@@ -1,6 +1,9 @@
 <?php include "database.php"; ?>
 <?php 
 // get total question 
+$query = "SELECT * FROM Question";
+// get result
+$result = 
 ?>
 <!DOCTYPE html>
 <html lang="fr">
