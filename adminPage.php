@@ -41,4 +41,191 @@ $categories = [
     ['id' => 4, 'name' => 'Science'],
     ['id' => 5, 'name' => 'Nature'],
 ];
-?>? 
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #eee;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        form div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #28a745;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button[type="button"] {
+            background: #007bff;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .question {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .question div {
+            margin-bottom: 10px;
+        }
+
+        .question label {
+            margin-bottom: 0;
+        }
+
+        input[type="checkbox"] {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin - Quiz</h1>
+        <ul>
+            <?php foreach ($quizzes as $quiz): ?>
+                <li><?php echo htmlspecialchars($quiz['name']) . ' - ' . htmlspecialchars($quiz['category']); ?></li>
+            <?php endforeach; ?>
+        </ul>
+
+        <h2>Ajouter un nouveau quiz</h2>
+        <form action="admin.php" method="post">
+            <div>
+                <label for="quiz_name">Nom du quiz :</label>
+                <input type="text" id="quiz_name" name="quiz_name" required>
+            </div>
+            <div>
+                <label for="category_id">Categorie :</label>
+                <select id="category_id" name="category_id" required>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?php echo $category['id']; ?>"><?php echo htmlspecialchars($category['name']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div id="questions">
+                <h3>Questions</h3>
+                <div class="question">
+                    <label>Question:</label>
+                    <input type="text" name="questions[]" required>
+                    <div>
+                        <label>Réponse 1 :</label>
+                        <input type="text" name="responses[0][][text]" required>
+                        <input type="checkbox" name="responses[0][][is_correct]"> Correct
+                    </div>
+                    <div>
+                        <label>Réponse 2 :</label>
+                        <input type="text" name="responses[0][][text]" required>
+                        <input type="checkbox" name="responses[0][][is_correct]"> Correct
+                    </div>
+                    <div>
+                        <label>Réponse 3 :</label>
+                        <input type="text" name="responses[0][][text]" required>
+                        <input type="checkbox" name="responses[0][][is_correct]"> Correct
+                    </div>
+                    <div>
+                        <label>Réponse 4 :</label>
+                        <input type="text" name="responses[0][][text]" required>
+                        <input type="checkbox" name="responses[0][][is_correct]"> Correct
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="addQuestion()">Ajouter une question</button>
+            <div>
+                <button type="submit">Ajouter</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function addQuestion() {
+            const questionsDiv = document.getElementById('questions');
+            const questionCount = questionsDiv.querySelectorAll('.question').length;
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.innerHTML = `
+                <label>Question:</label>
+                <input type="text" name="questions[]" required>
+                <div>
+                    <label>Réponse 1:</label>
+                    <input type="text" name="responses[${questionCount}][][text]" required>
+                    <input type="checkbox" name="responses[${questionCount}][][is_correct]"> Correct
+                </div>
+                <div>
+                    <label>Réponse 2:</label>
+                    <input type="text" name="responses[${questionCount}][][text]" required>
+                    <input type="checkbox" name="responses[${questionCount}][][is_correct]"> Correct
+                </div>
+                <div>
+                    <label>Réponse 3:</label>
+                    <input type="text" name="responses[${questionCount}][][text]" required>
+                    <input type="checkbox" name="responses[${questionCount}][][is_correct]"> Correct
+                </div>
+                <div>
+                    <label>Réponse 4:</label>
+                    <input type="text" name="responses[${questionCount}][][text]" required>
+                    <input type="checkbox" name="responses[${questionCount}][][is_correct]"> Correct
+                </div>
+            `;
+            questionsDiv.appendChild(questionDiv);
+        }
+    </script>
+</body>
+</html>
