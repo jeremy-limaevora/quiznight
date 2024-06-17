@@ -2,6 +2,12 @@
 <?php 
 // set question
 $number= (int) $_GET["n"];
+//    get total question
+$query="SELECT * FROM Question";
+// get result
+$result=$mysqli->query($query)or die ($mysqli->error.__LINE__);
+$total=$result->num_rows;
+
 // get question
 $query = "SELECT * FROM Question WHERE question_number = $number";
 $result = $mysqli->query($query) or die($mysqli->error.__LINE__);
@@ -28,7 +34,7 @@ $choices=$mysqli->query($query) or die ($mysqli->error.__LINE__);
     </header>
     <main>
     <div class="container">
-          <div class="current"> question <?php echo $question['question_number'];?> sur 5</div>
+          <div class="current"> question <?php echo $question['question_number'];?> sur <?php echo $total;?></div>
           <p class="question">
             <?php echo $question["text"];?>
           </p>
