@@ -8,10 +8,10 @@ if (isset($_SESSION['score'])) {
 }
 if($_POST){
        $number=$_POST["number"];
-       $selected_choice = $_POST["choice"];
-       $next= $number++;
+       $selected_choice = $_POST["choices"];
+       $next= $number+1;
 
-    //    get total question
+    // get total question
     $query="SELECT * FROM Question";
     // get result
     $result=$mysqli->query($query)or die ($mysqli->error.__LINE__);
@@ -23,15 +23,16 @@ if($_POST){
     // get row 
     $row=$result->fetch_assoc();
     // set corecteur choice
-    $correct_choice = $row["id"];
+    $correct_choice = $row["n"];
     // compare
     if($correct_choice == $selected_choice){
         $_SESSION["score"]++;
     }  
+    
     if($number==$total){
         header("Location: final.php");
         exit();
     } else{
-        header("Location: question.php?n=.next");
+        header("Location: question.php?n=2");
     }
 }
