@@ -226,6 +226,6 @@ $categories = [
             `;
             questionsDiv.appendChild(questionDiv);
         }
-    </script>dd 
+    </script>
 </body>
 </html>
