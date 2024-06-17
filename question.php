@@ -9,6 +9,9 @@ $question=$result->fetch_assoc();
 // get choices
 $query = "SELECT * FROM 'Question'
             WHERE question_number=$number";
+
+// get result
+$choices=$mysql->query($query) or die ($mysql->error.__LINE__);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
