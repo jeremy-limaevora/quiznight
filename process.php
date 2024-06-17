@@ -15,7 +15,7 @@ if($_POST){
     $query="SELECT * FROM Question";
     // get result
     $result=$mysqli->query($query)or die ($mysqli->error.__LINE__);
-    $total=$result->num_rows
+    $total=$result->num_rows;
     // get is correct
     $query= "SELECT * FROM choice WHERE answer = $number AND is_correct = 1";
     // get result 

@@ -28,7 +28,7 @@ $choices=$mysqli->query($query) or die ($mysqli->error.__LINE__);
     </header>
     <main>
     <div class="container">
-          <div class="current"> question 1 sur 5</div>
+          <div class="current"> question <?php echo $question['question_number'];?> sur 5</div>
           <p class="question">
             <?php echo $question["text"];?>
           </p>
