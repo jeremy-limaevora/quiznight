@@ -4,7 +4,12 @@
 $number= (int) $_GET("n");
 // get question
 $result = $mysql->query($query) or die ($mysql->error.__LINE__);
-$question->$result->fetch_assoc();?>
+$question=$result->fetch_assoc();
+
+// get choices
+$query = "SELECT * FROM 'Question'
+            WHERE question_number=$number";
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
