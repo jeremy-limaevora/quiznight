@@ -20,6 +20,8 @@
           </p>
           <form method="post" action="process.php">
             <ul class="choices">
+              <?php while($row=choices->fetch_assoc()):?>
+             
             <li><input name="choices" type="radio" value="1">PHP hypertext processor</li>
             <li><input name="choices" type="radio" value="1">Page priver</li>
             <li><input name="choices" type="radio" value="1">Page personels</li>
