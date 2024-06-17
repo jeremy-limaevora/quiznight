@@ -2,7 +2,9 @@
 <?php
 // set question
 $number= (int) $_GET("n");
-get question?>
+// get question
+$result = $mysql->query($query) or die ($mysql->error.__LINE__);
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
