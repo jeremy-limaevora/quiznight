@@ -23,7 +23,7 @@ $total = $result->num_rows;
             <ul>
                 <li><strong>Nombre de question: </strong><?php echo $total;?></li>
                 <li><strong>Type: </strong>Choix multiple</li>
-                <li><strong>Temps estimer: </strong>4 min</li>
+                <li><strong>Temps estimer: </strong><?php echo $total* .5 ;?>minutes</li>
             </ul>
             <!-- n=la valeur donc 1 pour la premier question -->
             <a href="question.php?n=1" class="start">Commencer le quiz</a>

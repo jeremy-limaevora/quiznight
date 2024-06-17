@@ -3,12 +3,11 @@
 // set question
 $number= (int) $_GET["n"];
 // get question
-$result = $mysqli->query($query) or die ($mysqli->error.__LINE__);
+$query = "SELECT * FROM Question WHERE question_number = $number";
+$result = $mysqli->query($query) or die($mysqli->error.__LINE__);
 $question=$result->fetch_assoc();
 
 // get choices
-$query = "SELECT * FROM 'Question'
-            WHERE question_number=$number";
 
 // get result
 $choices=$mysqli->query($query) or die ($mysqli->error.__LINE__);
@@ -35,8 +34,8 @@ $choices=$mysqli->query($query) or die ($mysqli->error.__LINE__);
           </p>
           <form method="post" action="process.php">
             <ul class="choices">
-              <?php while($row= choices ->fetch_assoc()):?>
-                <li><input name="choices" type="radio" value="<?php echo $row["id"];?>"><?php echo $row["text"] ?></li>
+              <?php while($row= $choices->fetch_assoc()):?>
+                <li><input name="choices" type="radio" value="<?php echo $row[$number];?>"><?php echo $row["text"] ?></li>
               <?php endwhile ?>
             <button type="sumbit" value="sumbit">Valider</button>
           </form>
