@@ -31,7 +31,7 @@ $choices=$mysql->query($query) or die ($mysql->error.__LINE__);
     <div class="container">
           <div class="current"> question 1 sur 5</div>
           <p class="question">
-            Pourquoi utilise-ton php ?
+            <?php echo $question["text"];?>
           </p>
           <form method="post" action="process.php">
             <ul class="choices">

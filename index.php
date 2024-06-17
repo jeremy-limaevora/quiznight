@@ -21,7 +21,7 @@ $total = $result->num_rows;
             <h1>QuizzNight</h1>
             <p>Ceci est un quizz a choix multiples</p>
             <ul>
-                <li><strong>Nombre de question: </strong>5</li>
+                <li><strong>Nombre de question: </strong><?php echo $total;?></li>
                 <li><strong>Type: </strong>Choix multiple</li>
                 <li><strong>Temps estimer: </strong>4 min</li>
             </ul>
