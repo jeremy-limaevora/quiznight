@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         // Annuler la transaction en cas d'erreur
         $pdo->rollBack();
-        echo "Erreur lors de l'ajout du quiz : " . $e->getMessage();
+        echo "Erreur lors de l'ajout u quiz : " . $e->getMessage();
     }
 } else {
     echo "Méthode non autorisée pour accéder à cette page.";
