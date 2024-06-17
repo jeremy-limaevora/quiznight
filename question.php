@@ -1,9 +1,9 @@
 <?php include "database.php"; ?>
-<?php
+<?php 
 // set question
-$number= (int) $_GET("n");
+$number= (int) $_GET["n"];
 // get question
-$result = $mysql->query($query) or die ($mysql->error.__LINE__);
+$result = $mysqli->query($query) or die ($mysqli->error.__LINE__);
 $question=$result->fetch_assoc();
 
 // get choices
@@ -11,7 +11,7 @@ $query = "SELECT * FROM 'Question'
             WHERE question_number=$number";
 
 // get result
-$choices=$mysql->query($query) or die ($mysql->error.__LINE__);
+$choices=$mysqli->query($query) or die ($mysqli->error.__LINE__);
 ?>
 <!DOCTYPE html>
 <html lang="fr">

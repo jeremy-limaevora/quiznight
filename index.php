@@ -1,11 +1,17 @@
 <?php include "database.php"; ?>
 <?php 
-// get total question 
-$query = "SELECT * FROM Question";
-// get result
-$result = $mysql->query($query) or die ($mysql->error.__LINE__);
-$total = $result->num_rows;
+// set question
+$number= (int) $_GET["n"];
+// get question
+$result = $mysqli->query($query) or die ($mysqli->error.__LINE__);
+$question=$result->fetch_assoc();
 
+// get choices
+$query = "SELECT * FROM 'Question'
+            WHERE question_number=$number";
+
+// get result
+$choices= $mysqli->query($query) or die ($mysqli->error.__LINE__);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
