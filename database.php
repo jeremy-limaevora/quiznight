@@ -2,7 +2,7 @@
   $db_host = '127.0.0.1';
   $db_user = 'root';
   $db_password = 'root';
-  $db_db = 'information_schema';
+  $db_db = 'Quiznight';
   $db_port = 8889;
 
   $mysqli = new mysqli(
@@ -12,6 +12,11 @@
     $db_db,
 	$db_port
   );
+
+  // mysqli_connect( $db_host,
+  // $db_user,
+  // $db_password,
+  // $db_db);
 	
   if ($mysqli->connect_error) {
     echo 'Errno: '.$mysqli->connect_errno;
@@ -26,5 +31,5 @@
   echo '<br>';
   echo 'Protocol version: '.$mysqli->protocol_version;
 
-  $mysqli->close();
+  // $mysqli->close();
 ?>
