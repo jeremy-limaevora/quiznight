@@ -35,9 +35,10 @@ $choices=$mysqli->query($query) or die ($mysqli->error.__LINE__);
           <form method="post" action="process.php">
             <ul class="choices">
               <?php while($row= $choices->fetch_assoc()):?>
-                <li><input name="choices" type="radio" value="<?php echo $row[$number];?>"><?php echo $row["text"] ?></li>
+                <li><input name="choice" type="radio" value="<?php echo $row[$number];?>"><?php echo $row["text"] ?></li>
               <?php endwhile ?>
             <button type="sumbit" value="sumbit">Valider</button>
+            <input type="hidden" name="number" value="<?php echo $number;?>" />
           </form>
         </div>
     </main>
