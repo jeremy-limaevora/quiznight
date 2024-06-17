@@ -7,5 +7,6 @@ if (isset($_SESSION['score'])) {
 
 }
 if($_POST){
-        echo"Iam been submitted";
+       $number=$_POST["number"];
+       $selected_choice = $_POST["choice"];
 }
