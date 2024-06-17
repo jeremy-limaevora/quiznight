@@ -1,46 +1,18 @@
 <?php
 include 'config.php';
+include 'addQuiz.php';
 
-// Gérer la soumission du formulaire pour ajouter un nouveau quiz
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $quiz_name = $_POST['quiz_name'];
-    $category_id = $_POST['category_id'];
-    $questions = $_POST['questions'];
-    $responses = $_POST['responses'];
+// Récupérer des quiz existants s'il y en a
+$quizzes = [];
+$query = $pdo->query("SELECT quizzes.id, quizzes.name, categories.name AS category FROM quizzes LEFT JOIN categories ON quizzes.category_id = categories.id");
 
-    // Ajouter un nouveau quiz
-    $stmt = $pdo->prepare("INSERT INTO quizzes (name, category_id) VALUES (:name, :category_id)");
-    $stmt->execute(['name' => $quiz_name, 'category_id' => $category_id]);
-    $quiz_id = $pdo->lastInsertId();
-
-    // ajouter les questions et réponses
-    foreach ($questions as $index => $question_text) {
-        $stmt = $pdo->prepare("INSERT INTO questions (quiz_id, question_text) VALUES (:quiz_id, :question_text)");
-        $stmt->execute(['quiz_id' => $quiz_id, 'question_text' => $question_text]);
-        $question_id = $pdo->lastInsertId();
-
-        foreach ($responses[$index] as $answer) {
-            $stmt = $pdo->prepare("INSERT INTO responses (question_id, answer_text, is_correct) VALUES (:question_id, :answer_text, :is_correct)");
-            $stmt->execute([
-                'question_id' => $question_id,
-                'answer_text' => $answer['text'],
-                'is_correct' => isset($answer['is_correct']) ? 1 : 0
-            ]);
-        }
-    }
+if ($query) {
+    $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    // Gestion de l'erreur si la requête échoue
+    echo "Erreur lors de la récupération des quizzes.";
 }
 
-// Récupérer des quiz existants
-$quizzes = $pdo->query("SELECT quizzes.id, quizzes.name, categories.name AS category FROM quizzes LEFT JOIN categories ON quizzes.category_id = categories.id")->fetchAll(PDO::FETCH_ASSOC);
-
-// Récupérer les catégories
-$categories = [
-    ['id' => 1, 'name' => 'Sport'],
-    ['id' => 2, 'name' => 'Cinéma'],
-    ['id' => 3, 'name' => 'Culture générale'],
-    ['id' => 4, 'name' => 'Science'],
-    ['id' => 5, 'name' => 'Nature'],
-];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -49,115 +21,192 @@ $categories = [
     <title>Admin - Quiz</title>
     <style>
         body {
+            background: #1E1523;
+            color: #E2DDFE;
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+        }
+
+        .navbar {
+            background: #3D224E;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .left-align {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: #BAA7FF;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background: #6E56CF;
+            transform: scale(1.1);
+        }
+
+        .navbar .right-align {
+            margin-left: auto;
         }
 
         .container {
             width: 80%;
             margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
         }
 
-        h1, h2 {
-            color: #333;
+        h1,
+        h2 {
+            border-bottom: 2px solid #54346B;
+            padding-bottom: 5px;
         }
 
         ul {
-            list-style: none;
+            list-style-type: none;
             padding: 0;
         }
 
         ul li {
-            background: #eee;
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        form div {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input[type="text"], select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        button {
-            background: #28a745;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button[type="button"] {
-            background: #007bff;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        .question {
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .question div {
             margin-bottom: 10px;
         }
 
-        .question label {
-            margin-bottom: 0;
+        form {
+            background: #3D224E;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
-        input[type="checkbox"] {
-            margin-left: 10px;
+        form label {
+            display: block;
+            margin-bottom: 10px;
+            color: #E2DDFE;
+        }
+
+        form input[type="text"],
+        form select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #8457AA;
+            border-radius: 5px;
+            background-color: #1E1523;
+            color: #E2DDFE;
+        }
+
+        form button[type="button"],
+        form button[type="submit"],
+        form button[type="reset"] {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #6E56CF;
+            color: #E2DDFE;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+        }
+
+        form button[type="button"]:hover,
+        form button[type="submit"]:hover,
+        form button[type="reset"]:hover {
+            background-color: #8457AA;
+        }
+
+        .question {
+            background: #54346B;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .question label {
+            display: block;
+            margin-bottom: 5px;
+            color: #E2DDFE;
+        }
+
+        .question input[type="text"] {
+            width: calc(100% - 20px); /* Prend en compte le padding interne */
+            padding: 8px;
+            margin-bottom: 5px;
+            border: 1px solid #8457AA;
+            border-radius: 5px;
+            background-color: #1E1523;
+            color: #E2DDFE;
+        }
+
+        .question input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .question > div {
+            margin-bottom: 10px; /* Espace entre chaque bloc de réponse et la question suivante */
+        }
+
+        /* Style du select */
+        form select {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #8457AA;
+            border-radius: 5px;
+            background-color: #1E1523;
+            color: #E2DDFE;
+        }
+
+        /* Style des options du select */
+        form select option {
+            background-color: #3D224E;
+            color: #BAA7FF;
         }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <div class="left-align">
+            <a href="#">Liste des Quiz</a>
+            <a href="#">Ajouter un Quiz</a>
+        </div>
+        <a href="#" class="right-align">Se connecter</a>
+    </div>
+
     <div class="container">
         <h1>Admin - Quiz</h1>
         <ul>
-            <?php foreach ($quizzes as $quiz): ?>
-                <li><?php echo htmlspecialchars($quiz['name']) . ' - ' . htmlspecialchars($quiz['category']); ?></li>
-            <?php endforeach; ?>
+            <?php if (!empty($quizzes)): ?>
+                <!-- Liste des quiz -->
+                <?php foreach ($quizzes as $quiz): ?>
+                    <li><?php echo htmlspecialchars($quiz['name']) . ' - ' . htmlspecialchars($quiz['category']); ?></li>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <li>Pas de quiz disponible.</li>
+            <?php endif; ?>
         </ul>
 
         <h2>Ajouter un nouveau quiz</h2>
-        <form action="admin.php" method="post">
+        <form action="addQuiz.php" method="post">
             <div>
                 <label for="quiz_name">Nom du quiz :</label>
                 <input type="text" id="quiz_name" name="quiz_name" required>
             </div>
             <div>
-                <label for="category_id">Categorie :</label>
+                <label for="category_id">Catégorie :</label>
                 <select id="category_id" name="category_id" required>
-                    <?php foreach ($categories as $category): ?>
-                        <option value="<?php echo $category['id']; ?>"><?php echo htmlspecialchars($category['name']); ?></option>
-                    <?php endforeach; ?>
+                    <option value="1">Sport</option>
+                    <option value="2">Nature</option>
+                    <option value="3">Culture générale</option>
+                    <option value="4">Géographie</option>
+                    <option value="5">Histoire</option>
+                    <option value="6">Musique</option>
                 </select>
             </div>
             <div id="questions">
@@ -188,9 +237,8 @@ $categories = [
                 </div>
             </div>
             <button type="button" onclick="addQuestion()">Ajouter une question</button>
-            <div>
-                <button type="submit">Ajouter</button>
-            </div>
+            <button type="submit">Ajouter</button>
+            <button type="reset">Réinitialiser</button>
         </form>
     </div>
 
@@ -204,22 +252,22 @@ $categories = [
                 <label>Question:</label>
                 <input type="text" name="questions[]" required>
                 <div>
-                    <label>Réponse 1:</label>
+                    <label>Réponse 1 :</label>
                     <input type="text" name="responses[${questionCount}][][text]" required>
                     <input type="checkbox" name="responses[${questionCount}][][is_correct]"> Correct
                 </div>
                 <div>
-                    <label>Réponse 2:</label>
+                    <label>Réponse 2 :</label>
                     <input type="text" name="responses[${questionCount}][][text]" required>
                     <input type="checkbox" name="responses[${questionCount}][][is_correct]"> Correct
                 </div>
                 <div>
-                    <label>Réponse 3:</label>
+                    <label>Réponse 3 :</label>
                     <input type="text" name="responses[${questionCount}][][text]" required>
                     <input type="checkbox" name="responses[${questionCount}][][is_correct]"> Correct
                 </div>
                 <div>
-                    <label>Réponse 4:</label>
+                    <label>Réponse 4 :</label>
                     <input type="text" name="responses[${questionCount}][][text]" required>
                     <input type="checkbox" name="responses[${questionCount}][][is_correct]"> Correct
                 </div>
