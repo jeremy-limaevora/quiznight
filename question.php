@@ -4,7 +4,7 @@
 $number= (int) $_GET("n");
 // get question
 $result = $mysql->query($query) or die ($mysql->error.__LINE__);
-?>
+$question->$result->fetch_assoc();?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
