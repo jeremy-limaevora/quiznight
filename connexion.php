@@ -1,28 +1,53 @@
 <?php
-// Connexion à la base de données
 $servername = "localhost";
-$username = "votre_username";
-$password = "votre_password";
-$dbname = "monsite";
+$username = "root";
+$password = "Laplateforme1";
+$dbname = "quiznight";
 
+// Créer la connexion
 $conn = new mysqli($servername, $username, $password, $dbname);
 
+// Vérifier la connexion
 if ($conn->connect_error) {
-    die("Connection failed: ". $conn->connect_error);
+    die("Échec de la connexion : " . $conn->connect_error);
 }
 
-// Préparation de la requête SQL
-$stmt = $conn->prepare("INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe) VALUES (?,?,?,?)");
-$stmt->bind_param("ssss", $_POST['nom'], $_POST['prenom'], $_POST['email'], password_hash($_POST['motdepasse'], PASSWORD_DEFAULT));
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Récupérer les données du formulaire
+    $user = isset($_POST['username']) ? trim($_POST['username']) : null;
+    $pass = isset($_POST['password']) ? trim($_POST['password']) : null;
+    $email = isset($_POST['email']) ? trim($_POST['email']) : null;
 
-// Exécution de la requête
-if ($stmt->execute()) {
-    echo "Inscription réussie!";
-} else {
-    echo "Erreur : ". $stmt->error;
+    // Validation des données
+    if (empty($user) || empty($pass) || empty($email)) {
+        echo "Tous les champs sont obligatoires.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Format d'email invalide.";
+    } else {
+        // Vérifier si l'utilisateur existe déjà
+        $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+        $stmt->bind_param("ss", $user, $email);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->num_rows > 0) {
+            echo "Le nom d'utilisateur ou l'email est déjà utilisé.";
+        } else {
+            // Hacher le mot de passe
+            $hashed_password = password_hash($pass, PASSWORD_DEFAULT);
+
+            // Insérer les données dans la base de données
+            $stmt = $conn->prepare("INSERT INTO users (username, password, email) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $user, $hashed_password, $email);
+
+            if ($stmt->execute()) {
+                echo "Inscription réussie !";
+            } else {
+                echo "Erreur : " . $stmt->error;
+            }
+        }
+        $stmt->close();
+    }
 }
-
-// Fermeture de la connexion
-$stmt->close();
 $conn->close();
 ?>
