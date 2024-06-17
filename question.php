@@ -20,13 +20,9 @@
           </p>
           <form method="post" action="process.php">
             <ul class="choices">
-              <?php while($row=choices->fetch_assoc()):?>
-             
-            <li><input name="choices" type="radio" value="1">PHP hypertext processor</li>
-            <li><input name="choices" type="radio" value="1">Page priver</li>
-            <li><input name="choices" type="radio" value="1">Page personels</li>
-            <li><input name="choices" type="radio" value="1">Personal hypertext</li>
-            </ul>
+              <?php while($row= choices ->fetch_assoc()):?>
+                <li><input name="choices" type="radio" value="<?php echo $row["id"];?>"><?php echo $row["text"] ?></li>
+              <?php endwhile ?>
             <button type="sumbit" value="sumbit">Valider</button>
           </form>
         </div>
