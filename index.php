@@ -3,7 +3,9 @@
 // get total question 
 $query = "SELECT * FROM Question";
 // get result
-$result = 
+$result = $mysql->query($query) or die ($mysql->error.__LINE__);
+$total = $result->num_rows;
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
