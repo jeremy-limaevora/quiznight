@@ -41,4 +41,4 @@ $categories = [
     ['id' => 4, 'name' => 'Science'],
     ['id' => 5, 'name' => 'Nature'],
 ];
-?>
+?>? 
